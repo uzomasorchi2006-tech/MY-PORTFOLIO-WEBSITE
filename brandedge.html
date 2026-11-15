@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrandEdge Studio</title>
+    <link rel="stylesheet" href="brandedge.css" />
+  </head>
+  <body>
+    <nav class="brandedge-nav">
+      <div class="brandedge-logo">
+        <img src="ASSETS/logo.png" alt="BrandEdge Studio logo" />
+        <span>BrandEdge Studio</span>
+      </div>
+
+      <button class="menu-toggle" aria-label="Toggle navigation">☰</button>
+
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#projects">Work</a></li>
+        <li><a href="#case-studies">Case</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div id="home" class="home-page">
+      <header class="hero-section">
+        <video
+          class="hero-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-hidden="true"
+          tabindex="-1"
+        >
+          <source
+            src="ASSETS/Graphic_designer_working_in_studio_2724dbef.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div class="hero-copy">
+          <p class="eyebrow">BrandEdge Studio · Graphic Design</p>
+          <h1>We turn ideas into visuals that convert.</h1>
+          <p class="hero-text">
+            A graphic design studio for meaningful messages, memorable events,
+            and brands ready to stand out.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#projects" class="primary-btn">View selected work</a>
+            <a href="#contact" class="secondary-btn light">Start a Project</a>
+          </div>
+
+          <div class="hero-specialties" aria-label="Design specialties">
+            <span>Flyers & campaigns</span>
+            <span>Event branding</span>
+            <span>Visual identities</span>
+          </div>
+          <div class="hero-note">
+            <span>From first idea</span>
+            <strong>To final artwork</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="home-showcase">
+        <div class="showcase-stats" aria-label="BrandEdge Studio highlights">
+          <div class="stat-box">
+            <strong data-count="50" data-suffix="+">50+</strong>
+            <span>Projects delivered</span>
+          </div>
+          <div class="stat-box">
+            <strong data-count="4" data-suffix="+">4+</strong>
+            <span>Years crafting visuals</span>
+          </div>
+          <div class="stat-box">
+            <strong data-count="100" data-suffix="%">100%</strong>
+            <span>Client satisfaction</span>
+          </div>
+        </div>
+
+        <div class="showcase-copy">
+          <p class="eyebrow">Why clients choose us</p>
+          <h2>Clean visuals that make your message feel premium.</h2>
+          <p>
+            We turn the details of your event, campaign, or brand into design
+            that feels polished, readable, and ready to share with confidence.
+          </p>
+        </div>
+
+        <div
+          class="showcase-features"
+          role="region"
+          aria-label="Why clients choose BrandEdge"
+        >
+          <div class="showcase-features-track">
+            <div class="showcase-features-group">
+              <article class="feature-card">
+                <span>01</span>
+                <h3>Event-ready design</h3>
+                <p>
+                  Flyers, posters, invitations, and branded visuals that feel
+                  consistent from first post to final print.
+                </p>
+              </article>
+              <article class="feature-card">
+                <span>02</span>
+                <h3>Social media impact</h3>
+                <p>
+                  Scroll-stopping graphics designed to keep your message clear,
+                  attractive, and easy to share.
+                </p>
+              </article>
+              <article class="feature-card">
+                <span>03</span>
+                <h3>Brand clarity</h3>
+                <p>
+                  Strategic typography and color choices that help your audience
+                  remember who you are at a glance.
+                </p>
+              </article>
+            </div>
+            <div class="showcase-features-group" aria-hidden="true">
+              <article class="feature-card">
+                <span>01</span>
+                <h3>Event-ready design</h3>
+                <p>
+                  Flyers, posters, invitations, and branded visuals that feel
+                  consistent from first post to final print.
+                </p>
+              </article>
+              <article class="feature-card">
+                <span>02</span>
+                <h3>Social media impact</h3>
+                <p>
+                  Scroll-stopping graphics designed to keep your message clear,
+                  attractive, and easy to share.
+                </p>
+              </article>
+              <article class="feature-card">
+                <span>03</span>
+                <h3>Brand clarity</h3>
+                <p>
+                  Strategic typography and color choices that help your audience
+                  remember who you are at a glance.
+                </p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section id="projects" class="projects-section">
+      <div class="section-header">
+        <p class="eyebrow">Selected work</p>
+        <h2>Designs made for real moments.</h2>
+        <p class="work-intro">
+          Browse a selection of flyer, event, and brand design projects. Choose
+          a category or open a design to view it larger.
+        </p>
+        <button id="admin-toggle" class="secondary-btn" type="button">
+          Admin Dashboard
+        </button>
+      </div>
+
+      <div
+        id="project-filters"
+        class="project-filters"
+        aria-label="Filter work by category"
+      ></div>
+
+      <div id="admin-login-panel" class="admin-login-panel hidden">
+        <h3>Admin Login</h3>
+        <div class="admin-login-row">
+          <input
+            type="password"
+            id="admin-password"
+            placeholder="Enter admin password"
+          />
+          <button id="admin-login-btn" class="primary-btn" type="button">
+            Login
+          </button>
+        </div>
+        <p id="admin-message" class="admin-message"></p>
+      </div>
+
+      <div id="admin-dashboard" class="admin-dashboard hidden">
+        <div class="section-header admin-header">
+          <h3>Portfolio Dashboard</h3>
+          <div class="dashboard-actions">
+            <button id="show-project-form" class="primary-btn" type="button">
+              Add Project
+            </button>
+            <button id="admin-logout" class="secondary-btn" type="button">
+              Log Out
+            </button>
+          </div>
+        </div>
+
+        <form id="project-form" class="project-form hidden">
+          <input type="hidden" id="project-id" />
+
+          <div class="form-row">
+            <label for="project-title">Project Title</label>
+            <input
+              type="text"
+              id="project-title"
+              placeholder="e.g. Church Event Flyer"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <label for="project-category">Project Category</label>
+            <input
+              type="text"
+              id="project-category"
+              placeholder="e.g. Church Flyer Design"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <label for="project-description">Project Description</label>
+            <textarea
+              id="project-description"
+              rows="5"
+              placeholder="Describe your project..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <label for="project-image">Upload Project Image</label>
+            <input type="file" id="project-image" accept="image/*" />
+            <img
+              id="image-preview"
+              class="image-preview hidden"
+              alt="Project preview"
+            />
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">Save Project</button>
+            <button type="button" id="cancel-edit" class="secondary-btn">
+              Cancel
+            </button>
+          </div>
+        </form>
+
+        <section
+          class="review-admin-section"
+          aria-labelledby="review-admin-title"
+        >
+          <div class="review-admin-header">
+            <h4 id="review-admin-title">Manage Client Reviews</h4>
+            <button id="show-review-form" class="primary-btn" type="button">
+              Add Review
+            </button>
+          </div>
+
+          <form id="review-form" class="project-form hidden">
+            <input type="hidden" id="review-id" />
+
+            <div class="form-row">
+              <label for="review-name">Client Name</label>
+              <input
+                type="text"
+                id="review-name"
+                maxlength="80"
+                placeholder="Client name"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <label for="review-role">Client Role</label>
+              <input
+                type="text"
+                id="review-role"
+                maxlength="100"
+                placeholder="e.g. Event Organizer"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <label for="review-rating">Rating</label>
+              <select id="review-rating" required>
+                <option value="5">5 stars</option>
+                <option value="4">4 stars</option>
+                <option value="3">3 stars</option>
+                <option value="2">2 stars</option>
+                <option value="1">1 star</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="review-quote">Client Review</label>
+              <textarea
+                id="review-quote"
+                rows="4"
+                maxlength="600"
+                placeholder="Write the client's feedback..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="primary-btn">Save Review</button>
+              <button
+                id="cancel-review-edit"
+                type="button"
+                class="secondary-btn"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+
+          <p
+            id="review-admin-message"
+            class="admin-message"
+            role="status"
+            aria-live="polite"
+          ></p>
+          <div id="review-admin-list" class="review-admin-list"></div>
+        </section>
+      </div>
+
+      <div id="project-list" class="project-list"></div>
+
+      <dialog
+        id="project-preview"
+        class="project-preview"
+        aria-labelledby="preview-title"
+      >
+        <button
+          type="button"
+          class="preview-close"
+          aria-label="Close project preview"
+        >
+          &times;
+        </button>
+        <img id="preview-image" src="" alt="" />
+        <div class="preview-caption">
+          <h3 id="preview-title"></h3>
+          <p id="preview-description"></p>
+        </div>
+      </dialog>
+    </section>
+
+    <section id="about" class="about-section">
+      <div class="about-overview">
+        <div class="about-copy">
+          <p class="eyebrow">MEET THE FOUNDER</p>
+          <h2>Uzoma Emmanuel</h2>
+          <p>
+            BrandEdge Studio creates visual identities, event designs, and
+            campaigns for people with something meaningful to share. Every
+            project starts with listening and ends with purposeful design made
+            to be seen.
+          </p>
+          <p>
+            We keep the process personal, the message clear, and the final files
+            ready for real-world use.
+          </p>
+          <a class="about-work-link" href="#projects"
+            >Explore selected work <span aria-hidden="true">↗</span></a
+          >
+        </div>
+
+        <figure class="about-image">
+          <img
+            src="ASSETS/MY-PHOTO.jpeg"
+            alt="A bright creative workspace with a desk and design materials"
+          />
+          <figcaption>BRAND-IDENTITY DESIGNER</figcaption>
+        </figure>
+      </div>
+
+      <div
+        class="about-principles"
+        role="region"
+        aria-label="Our mission and vision"
+      >
+        <div class="mission-vision-track">
+          <div class="mission-vision-group">
+            <article class="about-principle">
+              <p class="eyebrow">Our mission</p>
+              <h3>Make good ideas impossible to overlook.</h3>
+              <p>
+                We turn ideas into clear, memorable visuals that help people,
+                events, and brands communicate with confidence.
+              </p>
+            </article>
+            <article class="about-principle">
+              <p class="eyebrow">Our vision</p>
+              <h3>Design that feels unmistakably yours.</h3>
+              <p>
+                We want every client to have a visual presence that feels
+                personal, purposeful, and easy to recognize.
+              </p>
+            </article>
+          </div>
+          <div class="mission-vision-group" aria-hidden="true">
+            <article class="about-principle">
+              <p class="eyebrow">Our mission</p>
+              <h3>Make good ideas impossible to overlook.</h3>
+              <p>
+                We turn ideas into clear, memorable visuals that help people,
+                events, and brands communicate with confidence.
+              </p>
+            </article>
+            <article class="about-principle">
+              <p class="eyebrow">Our vision</p>
+              <h3>Design that feels unmistakably yours.</h3>
+              <p>
+                We want every client to have a visual presence that feels
+                personal, purposeful, and easy to recognize.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-designer">
+        <span class="about-monogram" aria-hidden="true">BE</span>
+        <div>
+          <p class="eyebrow">Meet the designer</p>
+          <h3>Thoughtful collaboration, from first brief to final file.</h3>
+          <p>
+            Each BrandEdge project gets direct creative attention, with care
+            given to the message, the audience, and the details that make the
+            design work.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="services-section">
+      <div class="section-header">
+        <p class="eyebrow">What we do</p>
+        <h2>Design services for the moments that matter.</h2>
+        <p class="services-intro">
+          Choose a service to start a conversation. We’ll shape the scope,
+          schedule, and final deliverables around your brief.
+        </p>
+      </div>
+
+      <div class="services-grid">
+        <article class="service-card">
+          <span>01</span>
+          <h3>Church Flyer Designs</h3>
+          <p>
+            Event announcements for worship, outreach, conferences, and church
+            programs, designed to keep essential details clear.
+          </p>
+          <a class="service-link" href="#contact" data-service="Church Flyer"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="service-card">
+          <span>02</span>
+          <h3>Birthday Flyers</h3>
+          <p>
+            Personal invitations and celebration graphics made to feel joyful,
+            distinctive, and ready to share.
+          </p>
+          <a class="service-link" href="#contact" data-service="Birthday Flyer"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="service-card">
+          <span>03</span>
+          <h3>Event Branding</h3>
+          <p>
+            A coordinated visual direction for launches, ceremonies,
+            conferences, and special occasions.
+          </p>
+          <a class="service-link" href="#contact" data-service="Event Branding"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="service-card">
+          <span>04</span>
+          <h3>Social Media Design</h3>
+          <p>
+            Campaign posts and branded templates that bring consistency to your
+            feed and promotions.
+          </p>
+          <a
+            class="service-link"
+            href="#contact"
+            data-service="Social Media Design"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="service-card">
+          <span>05</span>
+          <h3>Brand Identity</h3>
+          <p>
+            A recognizable visual system with considered color, type, and
+            graphic elements for your brand.
+          </p>
+          <a class="service-link" href="#contact" data-service="Brand Identity"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="service-card">
+          <span>06</span>
+          <h3>Logo Design</h3>
+          <p>
+            A purposeful logo concept developed to suit your name, audience, and
+            brand character.
+          </p>
+          <a class="service-link" href="#contact" data-service="Logo Design"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="service-card">
+          <span>07</span>
+          <h3>Print Design</h3>
+          <p>
+            Flyers, posters, invitations, and banners prepared with the right
+            layout for print.
+          </p>
+          <a class="service-link" href="#contact" data-service="Print Design"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="service-card">
+          <span>08</span>
+          <h3>Creative Direction</h3>
+          <p>
+            A clear visual direction to keep your campaign or event materials
+            working as one.
+          </p>
+          <a
+            class="service-link"
+            href="#contact"
+            data-service="Creative Direction"
+            >Request this service <span aria-hidden="true">↗</span></a
+          >
+        </article>
+      </div>
+
+      <div class="service-timing">
+        <p class="eyebrow">Clear timelines</p>
+        <p>
+          Every project is different. We confirm the schedule, revisions, and
+          final file formats with you before design work begins.
+        </p>
+      </div>
+    </section>
+
+    <section class="steps-section">
+      <div class="section-header">
+        <p class="eyebrow">How it works</p>
+        <h2>Three steps from brief to final design.</h2>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-number">01</span>
+          <h3>Send your brief</h3>
+          <p>
+            Tell me your idea, audience, colors, and goals so I can shape the
+            right design direction.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-number">02</span>
+          <h3>We create concepts</h3>
+          <p>
+            I build a strong visual direction based on your brand personality
+            and event needs.
+          </p>
+        </div>
+        <div class="step-card">
+          <span class="step-number">03</span>
+          <h3>Review and refine</h3>
+          <p>
+            You review the design, share feedback, and we finalize a polished
+            output ready to use.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="case-studies" class="case-studies-section">
+      <div class="section-header case-studies-header">
+        <p class="eyebrow">Selected case studies</p>
+        <h2>Thoughtful design, shaped around the brief.</h2>
+        <p>
+          Explore the idea behind each project, the visual direction, and the
+          creative work that brought it together.
+        </p>
+      </div>
+
+      <div class="case-studies-grid">
+        <article class="case-study-card">
+          <div
+            class="flyer-comparison"
+            data-comparison
+            style="--comparison-position: 50%"
+          >
+            <div
+              class="flyer-artwork flyer-before"
+              role="img"
+              aria-label="Before: a simple revival night flyer"
+            >
+              <span class="flyer-masthead">COMMUNITY CHURCH</span>
+              <span class="flyer-kicker">INVITES YOU TO</span>
+              <strong class="flyer-title">REVIVAL<br />NIGHT</strong>
+              <span class="flyer-description"
+                >An evening of prayer and worship</span
+              >
+              <span class="flyer-event-details"
+                >FRIDAY, JULY 18<br />6:00 PM · MAIN HALL</span
+              >
+            </div>
+            <div class="flyer-comparison-after" aria-hidden="true">
+              <div class="flyer-artwork flyer-after">
+                <span class="flyer-masthead">COMMUNITY CHURCH</span>
+                <span class="flyer-kicker">ONE NIGHT TO GATHER</span>
+                <strong class="flyer-title"
+                  >REVIVAL<br /><span>NIGHT</span></strong
+                >
+                <span class="flyer-description"
+                  >A night of prayer, worship &amp; renewal</span
+                >
+                <span class="flyer-event-details"
+                  >FRIDAY, JULY 18<br />6:00 PM · MAIN HALL</span
+                >
+              </div>
+            </div>
+            <span
+              class="comparison-label comparison-before-label"
+              aria-hidden="true"
+              >Before</span
+            >
+            <span
+              class="comparison-label comparison-after-label"
+              aria-hidden="true"
+              >After</span
+            >
+            <input
+              class="comparison-range"
+              type="range"
+              min="0"
+              max="100"
+              value="50"
+              aria-label="Drag to compare the original and redesigned revival flyer"
+            />
+            <span class="comparison-divider" aria-hidden="true"></span>
+          </div>
+          <div class="case-study-content">
+            <div class="case-study-meta">
+              <span>01</span><span>Church Flyer Design</span>
+            </div>
+            <h3>A clear message for a revival gathering</h3>
+            <dl class="case-study-details">
+              <div>
+                <dt>Brief</dt>
+                <dd>
+                  Give a faith-centered event a welcoming, easy-to-read
+                  announcement.
+                </dd>
+              </div>
+              <div>
+                <dt>Approach</dt>
+                <dd>
+                  Use a focused headline, warm color, and a clear information
+                  hierarchy.
+                </dd>
+              </div>
+              <div>
+                <dt>Deliverables</dt>
+                <dd>Event flyer for digital sharing and print.</dd>
+              </div>
+            </dl>
+            <a href="#contact" class="case-study-link"
+              >Discuss a similar project <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </article>
+
+        <article class="case-study-card">
+          <img
+            src="ASSETS/20260702_005127-01.jpeg"
+            alt="Birthday tribute flyer for Ruth Charles, featuring layered portraits and bold gold lettering"
+          />
+          <div class="case-study-content">
+            <div class="case-study-meta">
+              <span>02</span><span>Birthday Flyer</span>
+            </div>
+            <h3>A warm, personal birthday tribute</h3>
+            <dl class="case-study-details">
+              <div>
+                <dt>Brief</dt>
+                <dd>
+                  Create a joyful birthday tribute that celebrates Ruth Charles
+                  with a distinctive personal touch.
+                </dd>
+              </div>
+              <div>
+                <dt>Approach</dt>
+                <dd>
+                  Layer portrait photography with bold display type and a warm
+                  gold-and-green palette.
+                </dd>
+              </div>
+              <div>
+                <dt>Deliverables</dt>
+                <dd>Portrait birthday tribute flyer for digital sharing.</dd>
+              </div>
+            </dl>
+            <a href="#contact" class="case-study-link"
+              >Discuss a similar project <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </article>
+
+        <article class="case-study-card">
+          <img
+            src="ASSETS/launch-event-branding.jpg"
+            alt="Live event crowd representing an event branding project"
+          />
+          <div class="case-study-content">
+            <div class="case-study-meta">
+              <span>03</span><span>Event Branding</span>
+            </div>
+            <h3>One visual direction across an event</h3>
+            <dl class="case-study-details">
+              <div>
+                <dt>Brief</dt>
+                <dd>
+                  Make a launch feel cohesive across its promotional
+                  touchpoints.
+                </dd>
+              </div>
+              <div>
+                <dt>Approach</dt>
+                <dd>
+                  Set a consistent visual language for event communications.
+                </dd>
+              </div>
+              <div>
+                <dt>Deliverables</dt>
+                <dd>Core event identity and promotional design direction.</dd>
+              </div>
+            </dl>
+            <a href="#contact" class="case-study-link"
+              >Discuss a similar project <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="reviews" class="reviews-section">
+      <div class="section-header reviews-header">
+        <p class="eyebrow">Reviews</p>
+        <h2>Client feedback that speaks for itself.</h2>
+      </div>
+
+      <div
+        id="reviews-grid"
+        class="reviews-grid"
+        role="region"
+        aria-label="Client reviews"
+      >
+        <div id="reviews-track" class="reviews-track"></div>
+        <p id="reviews-empty" class="empty-state hidden">
+          No client reviews to display yet.
+        </p>
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <div class="section-header faq-header">
+        <p class="eyebrow">FAQ</p>
+        <h2>Questions clients usually ask.</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item active">
+          <button class="faq-question" type="button">
+            How long does a project take?
+          </button>
+          <div class="faq-answer">
+            <p>
+              Most projects take between 3 to 7 days depending on the scope,
+              number of revisions, and project complexity.
+            </p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            Can I request changes?
+          </button>
+          <div class="faq-answer">
+            <p>
+              Yes. You can request revisions after the first concept is
+              presented, and we’ll refine the design until it fits your vision.
+            </p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            Do you design social media assets too?
+          </button>
+          <div class="faq-answer">
+            <p>
+              Absolutely. We create social media designs, promotional posts,
+              event promos, branded graphics, and content visuals.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <div class="contact-wrapper">
+        <div class="contact-copy">
+          <h2>Let’s build something memorable.</h2>
+          <p>
+            Tell us what you need, and we’ll get back to you with the right
+            design direction for your brand, event, or campaign.
+          </p>
+
+          <div class="contact-links">
+            <a
+              href="https://wa.me/EmmanuelVictorious"
+              target="_blank"
+              rel="noreferrer"
+              >WhatsApp: EmmanuelVictorious</a
+            >
+            <a href="mailto:uzomasorchi2006@gmail.com"
+              >Email: uzomasorchi2006@gmail.com</a
+            >
+          </div>
+        </div>
+
+        <form id="contact-form" class="contact-form">
+          <div class="form-row contact-field">
+            <label for="contact-name">Full Name</label>
+            <input
+              type="text"
+              id="contact-name"
+              placeholder="Your name"
+              required
+            />
+          </div>
+
+          <div class="form-row contact-field">
+            <label for="contact-email">Email Address</label>
+            <input
+              type="email"
+              id="contact-email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div class="form-row contact-field">
+            <label for="contact-subject">Project Type</label>
+            <input
+              type="text"
+              id="contact-subject"
+              placeholder="Church flyer, birthday flyer, branding..."
+              required
+            />
+          </div>
+
+          <div class="form-row contact-field">
+            <label for="contact-message">Your Message</label>
+            <textarea
+              id="contact-message"
+              rows="5"
+              placeholder="Tell us about your project..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="contact-actions">
+            <button type="submit" class="primary-btn">Send via WhatsApp</button>
+            <button type="button" id="send-email-btn" class="secondary-btn">
+              Send via Email
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div>
+        <h3>BrandEdge Studio</h3>
+        <p>Creative design for brands, events, and meaningful stories.</p>
+      </div>
+
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#reviews">Reviews</a>
+      </div>
+    </footer>
+  </body>
+  <script src="brandedge.js"></script>
+</html>
