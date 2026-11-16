@@ -25,6 +25,7 @@ const showProjectFormBtn = document.getElementById("show-project-form");
 const cancelEditBtn = document.getElementById("cancel-edit");
 const adminToggleBtn = document.getElementById("admin-toggle");
 const adminLoginPanel = document.getElementById("admin-login-panel");
+const adminEmailInput = document.getElementById("admin-email");
 const adminPasswordInput = document.getElementById("admin-password");
 const adminLoginBtn = document.getElementById("admin-login-btn");
 const adminDashboard = document.getElementById("admin-dashboard");
@@ -105,7 +106,6 @@ if (statCounters.length) {
   }
 }
 
-const ADMIN_PASSWORD = "brandedge123";
 let currentImageData = "";
 let isAdmin = false;
 let activeProjectCategory = "All";
@@ -138,6 +138,16 @@ const defaultProjects = [
 ];
 
 const PROJECT_STORAGE_KEY = "brandedge-portfolio-projects";
+const PROJECT_IMPORT_KEY = "brandedge-local-projects-imported";
+const PROJECT_IMAGE_BUCKET = "portfolio-project-images";
+const supabaseConfig = window.BRANDEDGE_SUPABASE_CONFIG || {};
+const supabaseClient =
+  window.supabase &&
+  supabaseConfig.url &&
+  supabaseConfig.anonKey &&
+  supabaseConfig.adminUserId
+    ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey)
+    : null;
 
 function isValidProject(project) {
   return (
@@ -208,23 +218,70 @@ function loadProjects() {
 
 let projects = loadProjects();
 
-function persistProjects(nextProjects) {
-  try {
-    const deletedDefaultProjectIds = defaultProjects
-      .filter((project) => !nextProjects.some((item) => item.id === project.id))
-      .map((project) => project.id);
-    localStorage.setItem(
-      PROJECT_STORAGE_KEY,
-      JSON.stringify({ projects: nextProjects, deletedDefaultProjectIds }),
-    );
-    return true;
-  } catch (error) {
-    console.error("Could not save portfolio projects.", error);
-    alert(
-      "This project could not be saved in this browser. Storage may be full or unavailable. Try a smaller image and save again.",
-    );
-    return false;
+function projectFromRow(row) {
+  return {
+    id: Number(row.id),
+    title: row.title,
+    category: row.category,
+    description: row.description,
+    imageData: row.image_url,
+  };
+}
+
+async function loadSharedProjects() {
+  if (!supabaseClient) return;
+
+  const { data, error } = await supabaseClient
+    .from("projects")
+    .select("id, title, category, description, image_url")
+    .order("id");
+  if (error) throw error;
+
+  projects = data.map(projectFromRow);
+  renderProjects();
+}
+
+async function uploadProjectImage(imageData, projectId) {
+  if (!imageData.startsWith("data:image/")) return imageData;
+
+  const response = await fetch(imageData);
+  const imageBlob = await response.blob();
+  const extension = imageBlob.type.split("/")[1]?.replace("jpeg", "jpg") || "img";
+  const imagePath = `${projectId}/${Date.now()}.${extension}`;
+  const { error } = await supabaseClient.storage
+    .from(PROJECT_IMAGE_BUCKET)
+    .upload(imagePath, imageBlob, { contentType: imageBlob.type });
+  if (error) throw error;
+
+  return supabaseClient.storage
+    .from(PROJECT_IMAGE_BUCKET)
+    .getPublicUrl(imagePath).data.publicUrl;
+}
+
+async function saveSharedProject(project) {
+  const imageUrl = await uploadProjectImage(project.imageData, project.id);
+  const { error } = await supabaseClient.from("projects").upsert({
+    id: project.id,
+    title: project.title,
+    category: project.category,
+    description: project.description,
+    image_url: imageUrl,
+  });
+  if (error) throw error;
+  return { ...project, imageData: imageUrl };
+}
+
+async function importLocalProjects() {
+  if (localStorage.getItem(PROJECT_IMPORT_KEY) === "true") return;
+
+  const defaultProjectIds = new Set(defaultProjects.map((project) => project.id));
+  const customProjects = loadProjects().filter(
+    (project) => !defaultProjectIds.has(project.id),
+  );
+  for (const project of customProjects) {
+    await saveSharedProject(project);
   }
+  localStorage.setItem(PROJECT_IMPORT_KEY, "true");
 }
 
 const REVIEW_STORAGE_KEY = "brandedge-client-reviews";
@@ -436,6 +493,7 @@ function setAdminState(nextState) {
     resetReviewForm();
     adminLoginPanel?.classList.add("hidden");
     adminMessage.textContent = "";
+    adminEmailInput.value = "";
     adminPasswordInput.value = "";
   } else {
     renderReviewAdminList();
@@ -456,6 +514,19 @@ function openForm() {
   window.scrollTo({
     top: projectForm.offsetTop - 30,
     behavior: "smooth",
+  });
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => {
+    const replacements = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return replacements[character];
   });
 }
 
@@ -481,13 +552,13 @@ function renderProjects() {
     .map(
       (project) => `
         <article class="project-card">
-            <button type="button" class="project-preview-trigger" data-action="preview" data-id="${project.id}" aria-label="View ${project.title} larger">
-                <img src="${project.imageData || "ASSETS/SUMAS-BANNER.png"}" alt="${project.title}">
+            <button type="button" class="project-preview-trigger" data-action="preview" data-id="${project.id}" aria-label="View ${escapeHtml(project.title)} larger">
+                <img src="${escapeHtml(project.imageData || "ASSETS/SUMAS-BANNER.png")}" alt="${escapeHtml(project.title)}">
             </button>
             <div class="project-content">
-                <span class="project-category">${project.category || "Design Project"}</span>
-                <h3>${project.title}</h3>
-                <p>${project.description}</p>
+                <span class="project-category">${escapeHtml(project.category || "Design Project")}</span>
+                <h3>${escapeHtml(project.title)}</h3>
+                <p>${escapeHtml(project.description)}</p>
                 ${
                   isAdmin
                     ? `
@@ -549,16 +620,22 @@ function renderProjects() {
   });
 
   document.querySelectorAll('[data-action="delete"]').forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const id = Number(button.dataset.id);
       const projectIndex = projects.findIndex((item) => item.id === id);
 
       if (projectIndex !== -1) {
         const confirmDelete = confirm("Delete this project?");
         if (confirmDelete) {
-          const nextProjects = projects.filter((item) => item.id !== id);
-          if (persistProjects(nextProjects)) {
-            projects = nextProjects;
+          const { error } = await supabaseClient
+            .from("projects")
+            .delete()
+            .eq("id", id);
+          if (error) {
+            console.error("Could not delete portfolio project.", error);
+            alert("The project could not be deleted. Please try again.");
+          } else {
+            projects = projects.filter((item) => item.id !== id);
             renderProjects();
           }
         }
@@ -627,7 +704,7 @@ if (projectImage) {
 }
 
 if (projectForm) {
-  projectForm.addEventListener("submit", (event) => {
+  projectForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const title = projectTitle.value.trim();
@@ -642,8 +719,10 @@ if (projectForm) {
     const imageSource = currentImageData || "ASSETS/SUMAS-BANNER.png";
 
     let nextProjects;
+    const projectId = projectIdInput.value
+      ? Number(projectIdInput.value)
+      : Date.now();
     if (projectIdInput.value) {
-      const projectId = Number(projectIdInput.value);
       nextProjects = projects.map((project) =>
         project.id === projectId
           ? {
@@ -659,7 +738,7 @@ if (projectForm) {
       nextProjects = [
         ...projects,
         {
-          id: Date.now(),
+          id: projectId,
           title,
           category,
           description,
@@ -668,10 +747,24 @@ if (projectForm) {
       ];
     }
 
-    if (!persistProjects(nextProjects)) return;
-    projects = nextProjects;
-    renderProjects();
-    resetForm();
+    const savedProject = nextProjects.find((project) => project.id === projectId);
+    const submitButton = projectForm.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+    try {
+      const persistedProject = await saveSharedProject(savedProject);
+      projects = nextProjects.map((project) =>
+        project.id === persistedProject.id ? persistedProject : project,
+      );
+      renderProjects();
+      resetForm();
+    } catch (error) {
+      console.error("Could not save portfolio project.", error);
+      alert(
+        "The project could not be saved to shared storage. Check your connection and Supabase setup, then try again.",
+      );
+    } finally {
+      submitButton.disabled = false;
+    }
   });
 }
 
@@ -780,31 +873,68 @@ if (reviewAdminList) {
 if (adminToggleBtn) {
   adminToggleBtn.addEventListener("click", () => {
     adminLoginPanel?.classList.toggle("hidden");
-    adminPasswordInput?.focus();
+    if (!supabaseClient) {
+      adminMessage.textContent =
+        "Shared project storage is not configured yet. Follow the Supabase setup instructions in README.md.";
+    } else {
+      adminEmailInput?.focus();
+    }
   });
 }
 
 if (adminLoginBtn) {
-  adminLoginBtn.addEventListener("click", () => {
-    const password = adminPasswordInput.value.trim();
+  adminLoginBtn.addEventListener("click", async () => {
+    if (!supabaseClient) {
+      adminMessage.textContent =
+        "Shared project storage is not configured yet. Follow the Supabase setup instructions in README.md.";
+      return;
+    }
 
-    if (password === ADMIN_PASSWORD) {
+    adminLoginBtn.disabled = true;
+    adminMessage.textContent = "Signing in...";
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: adminEmailInput.value.trim(),
+        password: adminPasswordInput.value,
+      });
+      if (error) throw error;
+      if (data.user.id !== supabaseConfig.adminUserId) {
+        await supabaseClient.auth.signOut();
+        throw new Error("This account is not authorized to manage the portfolio.");
+      }
+
       setAdminState(true);
       adminLoginPanel?.classList.add("hidden");
-      adminMessage.textContent = "Welcome back, admin.";
-      renderProjects();
-      renderReviewAdminList();
-    } else {
-      adminMessage.textContent = "Incorrect password. Try again.";
+      try {
+        await importLocalProjects();
+        await loadSharedProjects();
+        adminMessage.textContent = "Signed in. Shared projects are up to date.";
+      } catch (error) {
+        console.error("Could not import or load shared portfolio projects.", error);
+        adminMessage.textContent =
+          "Signed in, but project sync failed. Check the Supabase setup and try refreshing.";
+      }
+    } catch (error) {
+      console.error("Admin sign-in failed.", error);
+      adminMessage.textContent =
+        "Sign-in failed. Check the email and password, then try again.";
+    } finally {
+      adminLoginBtn.disabled = false;
     }
   });
 }
 
 if (adminLogoutBtn) {
-  adminLogoutBtn.addEventListener("click", () => {
+  adminLogoutBtn.addEventListener("click", async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) {
+      console.error("Admin sign-out failed.", error);
+      adminMessage.textContent = "Could not sign out. Please try again.";
+      return;
+    }
     setAdminState(false);
     adminLoginPanel?.classList.remove("hidden");
-    adminPasswordInput?.focus();
+    adminEmailInput?.focus();
     renderProjects();
     renderReviewAdminList();
   });
@@ -884,3 +1014,39 @@ if (sendEmailBtn) {
 setAdminState(false);
 renderProjects();
 renderReviews();
+if (supabaseClient) {
+  loadSharedProjects().catch((error) => {
+    console.error("Could not load shared portfolio projects.", error);
+    adminMessage.textContent =
+      "Shared projects could not be loaded. Check the Supabase setup and refresh.";
+  });
+  supabaseClient.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error("Could not restore admin session.", error);
+      return;
+    }
+    if (data.session?.user.id === supabaseConfig.adminUserId) {
+      setAdminState(true);
+    } else if (data.session) {
+      supabaseClient.auth.signOut().catch((signOutError) => {
+        console.error("Could not clear an unauthorized session.", signOutError);
+      });
+    }
+  });
+  supabaseClient
+    .channel("portfolio-project-sync")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "projects" },
+      () => {
+        loadSharedProjects().catch((error) => {
+          console.error("Could not refresh shared portfolio projects.", error);
+        });
+      },
+    )
+    .subscribe((status, error) => {
+      if (status === "CHANNEL_ERROR") {
+        console.error("Portfolio project live sync failed.", error);
+      }
+    });
+}

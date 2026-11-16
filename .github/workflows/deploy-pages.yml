@@ -36,6 +36,7 @@ jobs:
             index.html
             brandedge.css
             brandedge.js
+            supabase-config.js
             ASSETS/
 
       - name: Deploy to GitHub Pages
