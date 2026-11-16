@@ -28,6 +28,14 @@ const adminLoginPanel = document.getElementById("admin-login-panel");
 const adminEmailInput = document.getElementById("admin-email");
 const adminPasswordInput = document.getElementById("admin-password");
 const adminLoginBtn = document.getElementById("admin-login-btn");
+const adminForgotPasswordBtn = document.getElementById("admin-forgot-password");
+const adminPasswordRecoveryForm = document.getElementById(
+  "admin-password-recovery-form",
+);
+const adminNewPasswordInput = document.getElementById("admin-new-password");
+const adminConfirmPasswordInput = document.getElementById(
+  "admin-confirm-password",
+);
 const adminDashboard = document.getElementById("admin-dashboard");
 const adminMessage = document.getElementById("admin-message");
 const adminLogoutBtn = document.getElementById("admin-logout");
@@ -148,6 +156,9 @@ const supabaseClient =
   supabaseConfig.adminUserId
     ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey)
     : null;
+if (adminEmailInput && supabaseConfig.adminEmail) {
+  adminEmailInput.value = supabaseConfig.adminEmail;
+}
 
 function isValidProject(project) {
   return (
@@ -493,11 +504,22 @@ function setAdminState(nextState) {
     resetReviewForm();
     adminLoginPanel?.classList.add("hidden");
     adminMessage.textContent = "";
-    adminEmailInput.value = "";
+    adminEmailInput.value = supabaseConfig.adminEmail || "";
     adminPasswordInput.value = "";
   } else {
     renderReviewAdminList();
   }
+}
+
+function showAdminPasswordRecovery() {
+  isAdmin = false;
+  adminDashboard?.classList.add("hidden");
+  showProjectFormBtn?.classList.add("hidden");
+  adminLoginPanel?.classList.remove("hidden");
+  adminPasswordRecoveryForm?.classList.remove("hidden");
+  adminEmailInput.value = supabaseConfig.adminEmail || "";
+  adminMessage.textContent =
+    "Choose a new password for the configured admin account.";
 }
 
 function resetForm() {
@@ -553,7 +575,7 @@ function renderProjects() {
       (project) => `
         <article class="project-card">
             <button type="button" class="project-preview-trigger" data-action="preview" data-id="${project.id}" aria-label="View ${escapeHtml(project.title)} larger">
-                <img src="${escapeHtml(project.imageData || "ASSETS/SUMAS-BANNER.png")}" alt="${escapeHtml(project.title)}">
+                <img src="${escapeHtml(project.imageData || "ASSETS/SUMAS-BANNER.png")}" alt="${escapeHtml(project.title)}" loading="lazy" decoding="async">
             </button>
             <div class="project-content">
                 <span class="project-category">${escapeHtml(project.category || "Design Project")}</span>
@@ -882,6 +904,96 @@ if (adminToggleBtn) {
   });
 }
 
+if (adminForgotPasswordBtn) {
+  adminForgotPasswordBtn.addEventListener("click", async () => {
+    if (!supabaseClient) {
+      adminMessage.textContent =
+        "Shared project storage is not configured. Please contact the site administrator.";
+      return;
+    }
+
+    const email = adminEmailInput.value.trim().toLowerCase();
+    if (
+      !supabaseConfig.adminEmail ||
+      email !== supabaseConfig.adminEmail.toLowerCase()
+    ) {
+      adminMessage.textContent =
+        "Use the configured admin email to request a password reset.";
+      return;
+    }
+
+    adminForgotPasswordBtn.disabled = true;
+    adminMessage.textContent = "Requesting a password reset...";
+    try {
+      const redirectTo = `${window.location.origin}${window.location.pathname}`;
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+      if (error) throw error;
+      adminMessage.textContent =
+        "If the admin account exists, a password-reset link will arrive in its inbox.";
+    } catch (error) {
+      console.error("Could not request an admin password reset.", error);
+      adminMessage.textContent =
+        "Could not request a reset. Check the Supabase redirect URL settings and try again.";
+    } finally {
+      adminForgotPasswordBtn.disabled = false;
+    }
+  });
+}
+
+if (adminPasswordRecoveryForm) {
+  adminPasswordRecoveryForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!supabaseClient) return;
+
+    const password = adminNewPasswordInput.value;
+    if (password !== adminConfirmPasswordInput.value) {
+      adminMessage.textContent = "The passwords do not match.";
+      return;
+    }
+
+    const submitButton = adminPasswordRecoveryForm.querySelector(
+      '[type="submit"]',
+    );
+    submitButton.disabled = true;
+    adminMessage.textContent = "Updating your password...";
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabaseClient.auth.getUser();
+      if (userError) throw userError;
+      if (user?.id !== supabaseConfig.adminUserId) {
+        throw new Error("The recovery session is not for the configured admin.");
+      }
+
+      const { error } = await supabaseClient.auth.updateUser({ password });
+      if (error) throw error;
+
+      adminPasswordRecoveryForm.reset();
+      adminPasswordRecoveryForm.classList.add("hidden");
+      setAdminState(true);
+      adminLoginPanel?.classList.add("hidden");
+      adminMessage.textContent = "Password updated. You are signed in.";
+      try {
+        await importLocalProjects();
+        await loadSharedProjects();
+      } catch (syncError) {
+        console.error("Could not load projects after password recovery.", syncError);
+        adminMessage.textContent =
+          "Password updated, but project sync failed. Refresh and try again.";
+      }
+    } catch (error) {
+      console.error("Could not update the admin password.", error);
+      adminMessage.textContent =
+        "Could not update the password. Open a fresh reset link and try again.";
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+}
+
 if (adminLoginBtn) {
   adminLoginBtn.addEventListener("click", async () => {
     if (!supabaseClient) {
@@ -1020,13 +1132,29 @@ if (supabaseClient) {
     adminMessage.textContent =
       "Shared projects could not be loaded. Check the Supabase setup and refresh.";
   });
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event !== "PASSWORD_RECOVERY") return;
+    if (session?.user.id !== supabaseConfig.adminUserId) {
+      adminMessage.textContent =
+        "This reset link is not for the configured admin account.";
+      return;
+    }
+    showAdminPasswordRecovery();
+  });
   supabaseClient.auth.getSession().then(({ data, error }) => {
     if (error) {
       console.error("Could not restore admin session.", error);
       return;
     }
     if (data.session?.user.id === supabaseConfig.adminUserId) {
-      setAdminState(true);
+      const recoveryType = new URLSearchParams(
+        window.location.hash.slice(1),
+      ).get("type");
+      if (recoveryType === "recovery") {
+        showAdminPasswordRecovery();
+      } else {
+        setAdminState(true);
+      }
     } else if (data.session) {
       supabaseClient.auth.signOut().catch((signOutError) => {
         console.error("Could not clear an unauthorized session.", signOutError);

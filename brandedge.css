@@ -149,7 +149,7 @@ img {
   content: "";
 }
 
-.hero-video {
+.hero-background-media {
   background-color: var(--forest-green);
   position: absolute;
   z-index: -2;

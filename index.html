@@ -28,21 +28,13 @@
 
     <div id="home" class="home-page">
       <header class="hero-section">
-        <video
-          class="hero-video"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="metadata"
-          aria-hidden="true"
-          tabindex="-1"
-        >
-          <source
-            src="ASSETS/Graphic_designer_working_in_studio_2724dbef.mp4"
-            type="video/mp4"
-          />
-        </video>
+        <img
+          class="hero-background-media"
+          src="ASSETS/studio-workspace.jpg"
+          alt=""
+          fetchpriority="high"
+          decoding="async"
+        />
         <div class="hero-copy">
           <p class="eyebrow">BrandEdge Studio · Graphic Design</p>
           <h1>We turn ideas into visuals that convert.</h1>
@@ -195,8 +187,44 @@
           <button id="admin-login-btn" class="primary-btn" type="button">
             Login
           </button>
+          <button
+            id="admin-forgot-password"
+            class="secondary-btn"
+            type="button"
+          >
+            Forgot password?
+          </button>
         </div>
         <p id="admin-message" class="admin-message"></p>
+        <p class="admin-message">
+          Admin registration is restricted. Create the single admin account in
+          Supabase; use “Forgot password?” to reset its password.
+        </p>
+        <form id="admin-password-recovery-form" class="project-form hidden">
+          <div class="form-row">
+            <label for="admin-new-password">New password</label>
+            <input
+              type="password"
+              id="admin-new-password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+          </div>
+          <div class="form-row">
+            <label for="admin-confirm-password">Confirm new password</label>
+            <input
+              type="password"
+              id="admin-confirm-password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">Update password</button>
+          </div>
+        </form>
       </div>
 
       <div id="admin-dashboard" class="admin-dashboard hidden">
@@ -393,6 +421,8 @@
           <img
             src="ASSETS/MY-PHOTO.jpeg"
             alt="A bright creative workspace with a desk and design materials"
+            loading="lazy"
+            decoding="async"
           />
           <figcaption>BRAND-IDENTITY DESIGNER</figcaption>
         </figure>
@@ -709,6 +739,8 @@
           <img
             src="ASSETS/20260702_005127-01.jpeg"
             alt="Birthday tribute flyer for Ruth Charles, featuring layered portraits and bold gold lettering"
+            loading="lazy"
+            decoding="async"
           />
           <div class="case-study-content">
             <div class="case-study-meta">
@@ -745,6 +777,8 @@
           <img
             src="ASSETS/launch-event-branding.jpg"
             alt="Live event crowd representing an event branding project"
+            loading="lazy"
+            decoding="async"
           />
           <div class="case-study-content">
             <div class="case-study-meta">
