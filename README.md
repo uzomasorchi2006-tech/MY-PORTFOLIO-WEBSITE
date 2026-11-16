@@ -20,19 +20,10 @@ A static portfolio website built with HTML, CSS, and JavaScript.
 
 ## Preview locally
 
-Open `index.html` directly, or use a local static-server extension such as Live Server in VS Code. A local server is recommended for consistent browser storage behavior.
+Open `index.html` directly, or use a local static-server extension such as Live Server in VS Code.
 
-## Admin dashboard limitations
+## Static portfolio
 
-Project changes are shared through Supabase and update other open portfolio pages in real time. To enable them:
+This site is static and has no backend, database, account login, or admin dashboard. Projects and client reviews are defined in `brandedge.js`; edit that file and redeploy to change them. The contact links open WhatsApp or the visitor's email app directly.
 
-1. Create a Supabase project at [supabase.com](https://supabase.com/) and create the single admin user under **Authentication > Users**. Disable public sign-ups in the Authentication settings; a static public website must not allow visitors to register admin accounts.
-2. Set the admin user's UUID in `adminUserId` in `supabase-config.js`. The setup script's admin-only policies must use this same UUID; run the full `supabase-setup.sql` script once in the Supabase **SQL Editor**.
-3. In **Project Settings > API**, copy the Project URL and the `anon`/publishable key into `url` and `anonKey` in `supabase-config.js`. These values are public website configuration; never put a `service_role` or secret key in this file.
-4. In **Authentication > URL Configuration**, allow the deployed portfolio URL as a redirect URL (for example, `https://uzomasorchi2006-tech.github.io/MY-PORTFOLIO-WEBSITE/`). Commit and push the changes to deploy. Sign in to the dashboard with the configured admin email and password.
-
-The admin login includes a password-reset flow that emails the configured admin address and accepts a new password only for the configured admin user. Creating or replacing that account remains an owner-only action in the Supabase dashboard; do not enable public sign-ups.
-
-On the first successful admin sign-in in a browser, locally saved custom projects are imported into Supabase. This can recover a project that was previously added on your phone. After setup, newly added projects and their images are stored centrally and appear on other open devices without a redeploy. Project image uploads are limited to 10 MB.
-
-Client reviews are still stored in each browser's local storage and do not synchronize yet. The Supabase client uses row-level security so only the configured admin user can modify shared projects or upload images.
+Removing the website connection does not delete or change any separate Supabase project or its stored data.
