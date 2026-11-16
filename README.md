@@ -24,4 +24,13 @@ Open `index.html` directly, or use a local static-server extension such as Live 
 
 ## Admin dashboard limitations
 
-The admin dashboard is front-end only. Its password is present in the JavaScript sent to every visitor, and project/review changes are stored only in the current browser's local storage. Those changes do not update the deployed site for other visitors or synchronize across devices. A secure, shared admin dashboard requires server-side authentication and persistent storage.
+Project changes are shared through Supabase and update other open portfolio pages in real time. To enable them:
+
+1. Create a Supabase project at [supabase.com](https://supabase.com/) and create an admin user under **Authentication > Users**. Disable public sign-ups in the Authentication settings.
+2. Set the admin user's UUID in `adminUserId` in `supabase-config.js`. The setup script's admin-only policies must use this same UUID; run the full `supabase-setup.sql` script once in the Supabase **SQL Editor**.
+3. In **Project Settings > API**, copy the Project URL and the `anon`/publishable key into `url` and `anonKey` in `supabase-config.js`. These values are public website configuration; never put a `service_role` or secret key in this file.
+4. Commit and push the changes to deploy. Sign in to the dashboard with the admin user's email and password.
+
+On the first successful admin sign-in in a browser, locally saved custom projects are imported into Supabase. This can recover a project that was previously added on your phone. After setup, newly added projects and their images are stored centrally and appear on other open devices without a redeploy. Project image uploads are limited to 10 MB.
+
+Client reviews are still stored in each browser's local storage and do not synchronize yet. The Supabase client uses row-level security so only the configured admin user can modify shared projects or upload images.
