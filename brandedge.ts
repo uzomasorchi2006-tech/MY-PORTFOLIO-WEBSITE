@@ -7,7 +7,6 @@ if (menuToggle && navLinks) {
     });
 }
 
-const projectForm = document.getElementById('project-form');
 const projectList = document.getElementById('project-list');
 const projectFilters = document.getElementById('project-filters');
 const projectPreview = document.getElementById('project-preview');
@@ -15,21 +14,6 @@ const previewImage = document.getElementById('preview-image');
 const previewTitle = document.getElementById('preview-title');
 const previewDescription = document.getElementById('preview-description');
 const previewClose = document.querySelector('.preview-close');
-const projectTitle = document.getElementById('project-title');
-const projectCategory = document.getElementById('project-category');
-const projectDescription = document.getElementById('project-description');
-const projectImage = document.getElementById('project-image');
-const projectIdInput = document.getElementById('project-id');
-const imagePreview = document.getElementById('image-preview');
-const showProjectFormBtn = document.getElementById('show-project-form');
-const cancelEditBtn = document.getElementById('cancel-edit');
-const adminToggleBtn = document.getElementById('admin-toggle');
-const adminLoginPanel = document.getElementById('admin-login-panel');
-const adminPasswordInput = document.getElementById('admin-password');
-const adminLoginBtn = document.getElementById('admin-login-btn');
-const adminDashboard = document.getElementById('admin-dashboard');
-const adminMessage = document.getElementById('admin-message');
-const adminLogoutBtn = document.getElementById('admin-logout');
 const faqItems = document.querySelectorAll('.faq-item');
 const contactForm = document.getElementById('contact-form');
 const contactName = document.getElementById('contact-name');
@@ -40,9 +24,6 @@ const sendEmailBtn = document.getElementById('send-email-btn');
 const serviceLinks = document.querySelectorAll('.service-link');
 const comparisonSliders = document.querySelectorAll('[data-comparison]');
 
-const ADMIN_PASSWORD = 'brandedge123';
-let currentImageData = '';
-let isAdmin = false;
 let activeProjectCategory = 'All';
 
 const projects = [
@@ -69,35 +50,6 @@ const projects = [
     }
 ];
 
-function setAdminState(nextState) {
-    isAdmin = nextState;
-    adminDashboard?.classList.toggle('hidden', !isAdmin);
-    showProjectFormBtn?.classList.toggle('hidden', !isAdmin);
-    if (!isAdmin) {
-        projectForm?.classList.add('hidden');
-        adminLoginPanel?.classList.remove('hidden');
-        adminMessage.textContent = '';
-        adminPasswordInput.value = '';
-    }
-}
-
-function resetForm() {
-    projectForm.reset();
-    projectIdInput.value = '';
-    currentImageData = '';
-    imagePreview.src = '';
-    imagePreview.classList.add('hidden');
-    projectForm.classList.add('hidden');
-}
-
-function openForm() {
-    projectForm.classList.remove('hidden');
-    window.scrollTo({
-        top: projectForm.offsetTop - 30,
-        behavior: 'smooth'
-    });
-}
-
 function renderProjects() {
     if (!projectList) return;
 
@@ -121,12 +73,6 @@ function renderProjects() {
                 <span class="project-category">${project.category || 'Design Project'}</span>
                 <h3>${project.title}</h3>
                 <p>${project.description}</p>
-                ${isAdmin ? `
-                    <div class="project-actions">
-                        <button type="button" data-action="edit" data-id="${project.id}">Edit</button>
-                        <button type="button" data-action="delete" data-id="${project.id}">Delete</button>
-                    </div>
-                ` : ''}
             </div>
         </article>
     `).join('');
@@ -145,43 +91,6 @@ function renderProjects() {
             previewTitle.textContent = project.title;
             previewDescription.textContent = project.description;
             projectPreview.showModal();
-        });
-    });
-
-    if (!isAdmin) return;
-
-    document.querySelectorAll('[data-action="edit"]').forEach(button => {
-        button.addEventListener('click', () => {
-            const project = projects.find(item => item.id === Number(button.dataset.id));
-            if (!project) return;
-
-            projectIdInput.value = project.id;
-            projectTitle.value = project.title;
-            projectCategory.value = project.category;
-            projectDescription.value = project.description;
-            currentImageData = project.imageData;
-
-            if (project.imageData) {
-                imagePreview.src = project.imageData;
-                imagePreview.classList.remove('hidden');
-            }
-
-            openForm();
-        });
-    });
-
-    document.querySelectorAll('[data-action="delete"]').forEach(button => {
-        button.addEventListener('click', () => {
-            const id = Number(button.dataset.id);
-            const projectIndex = projects.findIndex(item => item.id === id);
-
-            if (projectIndex !== -1) {
-                const confirmDelete = confirm('Delete this project?');
-                if (confirmDelete) {
-                    projects.splice(projectIndex, 1);
-                    renderProjects();
-                }
-            }
         });
     });
 }
@@ -204,101 +113,6 @@ function renderProjectFilters() {
             renderProjects();
         });
         projectFilters.append(button);
-    });
-}
-
-if (showProjectFormBtn) {
-    showProjectFormBtn.addEventListener('click', () => {
-        projectForm.classList.remove('hidden');
-        projectTitle.focus();
-    });
-}
-
-if (cancelEditBtn) {
-    cancelEditBtn.addEventListener('click', () => {
-        resetForm();
-    });
-}
-
-if (projectImage) {
-    projectImage.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            currentImageData = reader.result;
-            imagePreview.src = reader.result;
-            imagePreview.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-if (projectForm) {
-    projectForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        const title = projectTitle.value.trim();
-        const category = projectCategory.value.trim();
-        const description = projectDescription.value.trim();
-
-        if (!title || !category || !description) {
-            alert('Please complete the title, category, and description.');
-            return;
-        }
-
-        const imageSource = currentImageData || 'ASSETS/SUMAS-BANNER.png';
-
-        if (projectIdInput.value) {
-            const project = projects.find(item => item.id === Number(projectIdInput.value));
-            if (project) {
-                project.title = title;
-                project.category = category;
-                project.description = description;
-                project.imageData = imageSource;
-            }
-        } else {
-            projects.push({
-                id: Date.now(),
-                title,
-                category,
-                description,
-                imageData: imageSource
-            });
-        }
-
-        renderProjects();
-        resetForm();
-    });
-}
-
-if (adminToggleBtn) {
-    adminToggleBtn.addEventListener('click', () => {
-        adminLoginPanel?.classList.toggle('hidden');
-        adminPasswordInput?.focus();
-    });
-}
-
-if (adminLoginBtn) {
-    adminLoginBtn.addEventListener('click', () => {
-        const password = adminPasswordInput.value.trim();
-
-        if (password === ADMIN_PASSWORD) {
-            setAdminState(true);
-            adminLoginPanel?.classList.add('hidden');
-            adminMessage.textContent = 'Welcome back, admin.';
-            renderProjects();
-        } else {
-            adminMessage.textContent = 'Incorrect password. Try again.';
-        }
-    });
-}
-
-if (adminLogoutBtn) {
-    adminLogoutBtn.addEventListener('click', () => {
-        setAdminState(false);
-        renderProjects();
     });
 }
 
@@ -373,5 +187,4 @@ if (sendEmailBtn) {
     });
 }
 
-setAdminState(false);
 renderProjects();

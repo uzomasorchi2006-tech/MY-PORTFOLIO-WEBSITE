@@ -6,6 +6,7 @@
     <title>BrandEdge Studio</title>
     <link rel="stylesheet" href="brandedge.css" />
   </head>
+
   <body>
     <nav class="brandedge-nav">
       <div class="brandedge-logo">
@@ -28,21 +29,13 @@
 
     <div id="home" class="home-page">
       <header class="hero-section">
-        <video
-          class="hero-video"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="metadata"
-          aria-hidden="true"
-          tabindex="-1"
-        >
-          <source
-            src="ASSETS/Graphic_designer_working_in_studio_2724dbef.mp4"
-            type="video/mp4"
-          />
-        </video>
+        <img
+          class="hero-background-media"
+          src="ASSETS/studio-workspace.jpg"
+          alt=""
+          fetchpriority="high"
+          decoding="async"
+        />
         <div class="hero-copy">
           <p class="eyebrow">BrandEdge Studio · Graphic Design</p>
           <h1>We turn ideas into visuals that convert.</h1>
@@ -164,9 +157,6 @@
           Browse a selection of flyer, event, and brand design projects. Choose
           a category or open a design to view it larger.
         </p>
-        <button id="admin-toggle" class="secondary-btn" type="button">
-          Admin Dashboard
-        </button>
       </div>
 
       <div
@@ -174,178 +164,6 @@
         class="project-filters"
         aria-label="Filter work by category"
       ></div>
-
-      <div id="admin-login-panel" class="admin-login-panel hidden">
-        <h3>Admin Login</h3>
-        <div class="admin-login-row">
-          <input
-            type="email"
-            id="admin-email"
-            placeholder="Admin email"
-            autocomplete="username"
-            required
-          />
-          <input
-            type="password"
-            id="admin-password"
-            placeholder="Admin password"
-            autocomplete="current-password"
-            required
-          />
-          <button id="admin-login-btn" class="primary-btn" type="button">
-            Login
-          </button>
-        </div>
-        <p id="admin-message" class="admin-message"></p>
-      </div>
-
-      <div id="admin-dashboard" class="admin-dashboard hidden">
-        <div class="section-header admin-header">
-          <h3>Portfolio Dashboard</h3>
-          <div class="dashboard-actions">
-            <button id="show-project-form" class="primary-btn" type="button">
-              Add Project
-            </button>
-            <button id="admin-logout" class="secondary-btn" type="button">
-              Log Out
-            </button>
-          </div>
-        </div>
-
-        <form id="project-form" class="project-form hidden">
-          <input type="hidden" id="project-id" />
-
-          <div class="form-row">
-            <label for="project-title">Project Title</label>
-            <input
-              type="text"
-              id="project-title"
-              placeholder="e.g. Church Event Flyer"
-              required
-            />
-          </div>
-
-          <div class="form-row">
-            <label for="project-category">Project Category</label>
-            <input
-              type="text"
-              id="project-category"
-              placeholder="e.g. Church Flyer Design"
-              required
-            />
-          </div>
-
-          <div class="form-row">
-            <label for="project-description">Project Description</label>
-            <textarea
-              id="project-description"
-              rows="5"
-              placeholder="Describe your project..."
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-row">
-            <label for="project-image">Upload Project Image</label>
-            <input
-              type="file"
-              id="project-image"
-              accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
-            />
-            <img
-              id="image-preview"
-              class="image-preview hidden"
-              alt="Project preview"
-            />
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="primary-btn">Save Project</button>
-            <button type="button" id="cancel-edit" class="secondary-btn">
-              Cancel
-            </button>
-          </div>
-        </form>
-
-        <section
-          class="review-admin-section"
-          aria-labelledby="review-admin-title"
-        >
-          <div class="review-admin-header">
-            <h4 id="review-admin-title">Manage Client Reviews</h4>
-            <button id="show-review-form" class="primary-btn" type="button">
-              Add Review
-            </button>
-          </div>
-
-          <form id="review-form" class="project-form hidden">
-            <input type="hidden" id="review-id" />
-
-            <div class="form-row">
-              <label for="review-name">Client Name</label>
-              <input
-                type="text"
-                id="review-name"
-                maxlength="80"
-                placeholder="Client name"
-                required
-              />
-            </div>
-
-            <div class="form-row">
-              <label for="review-role">Client Role</label>
-              <input
-                type="text"
-                id="review-role"
-                maxlength="100"
-                placeholder="e.g. Event Organizer"
-                required
-              />
-            </div>
-
-            <div class="form-row">
-              <label for="review-rating">Rating</label>
-              <select id="review-rating" required>
-                <option value="5">5 stars</option>
-                <option value="4">4 stars</option>
-                <option value="3">3 stars</option>
-                <option value="2">2 stars</option>
-                <option value="1">1 star</option>
-              </select>
-            </div>
-
-            <div class="form-row">
-              <label for="review-quote">Client Review</label>
-              <textarea
-                id="review-quote"
-                rows="4"
-                maxlength="600"
-                placeholder="Write the client's feedback..."
-                required
-              ></textarea>
-            </div>
-
-            <div class="form-actions">
-              <button type="submit" class="primary-btn">Save Review</button>
-              <button
-                id="cancel-review-edit"
-                type="button"
-                class="secondary-btn"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-
-          <p
-            id="review-admin-message"
-            class="admin-message"
-            role="status"
-            aria-live="polite"
-          ></p>
-          <div id="review-admin-list" class="review-admin-list"></div>
-        </section>
-      </div>
 
       <div id="project-list" class="project-list"></div>
 
@@ -393,6 +211,8 @@
           <img
             src="ASSETS/MY-PHOTO.jpeg"
             alt="A bright creative workspace with a desk and design materials"
+            loading="lazy"
+            decoding="async"
           />
           <figcaption>BRAND-IDENTITY DESIGNER</figcaption>
         </figure>
@@ -709,6 +529,8 @@
           <img
             src="ASSETS/20260702_005127-01.jpeg"
             alt="Birthday tribute flyer for Ruth Charles, featuring layered portraits and bold gold lettering"
+            loading="lazy"
+            decoding="async"
           />
           <div class="case-study-content">
             <div class="case-study-meta">
@@ -745,6 +567,8 @@
           <img
             src="ASSETS/launch-event-branding.jpg"
             alt="Live event crowd representing an event branding project"
+            loading="lazy"
+            decoding="async"
           />
           <div class="case-study-content">
             <div class="case-study-meta">
@@ -926,7 +750,5 @@
       </div>
     </footer>
   </body>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
   <script src="brandedge.js"></script>
 </html>
